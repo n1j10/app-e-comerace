@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const routes = require("./routes");
+const { sendSuccess } = require("./shared/utils/apiResponse");
 const errorHandler = require("./shared/middlewares/errorHandler");
 const notFound = require("./shared/middlewares/notFound");
 
@@ -15,10 +16,8 @@ app.use(morgan("dev"));
 
 app.use("/api", routes);
 
-app.get("/", (req, res) => {
-    return sendSuccess(res, { message: "API is healthy." });
-  });
-  
+
+
 app.use(notFound);
 app.use(errorHandler);
 
