@@ -14,7 +14,13 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api", routes);
+
+app.get("/", (req, res) => {
+    return sendSuccess(res, { message: "API is healthy." });
+  });
+  
 app.use(notFound);
 app.use(errorHandler);
+
 
 module.exports = app;
