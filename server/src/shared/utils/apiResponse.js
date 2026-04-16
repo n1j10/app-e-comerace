@@ -1,0 +1,21 @@
+function sendSuccess(res, { statusCode = 200, message = "Success", data = null, meta = null } = {}) {
+  return res.status(statusCode).json({
+    success: true,
+    message,
+    data,
+    meta
+  });
+}
+
+function sendError(res, { statusCode = 500, message = "Internal Server Error", error = null } = {}) {
+  return res.status(statusCode).json({
+    success: false,
+    message,
+    error
+  });
+}
+
+module.exports = {
+  sendSuccess,
+  sendError
+};
