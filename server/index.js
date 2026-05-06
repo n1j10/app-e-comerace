@@ -3,18 +3,31 @@ const connectDb = require("./src/config/db");
 
 async function handler(req, res) {
   try {
-    await connectDb();
+    const requestUrl = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+    const isHealthCheck = requestUrl.pathname === "/" || requestUrl.pathname === "/api/health";
+
+    if (!isHealthCheck && req.method !== "OPTIONS") {
+      await connectDb();
+    }
+
     return app(req, res);
   } catch (error) {
-    console.error("Failed to handle request:", error.message);
-    return res.status(500).json({
+    console.error("Failed to initialize server:", {
+      path: req.url,
+      message: error.message
+    });
+
+    const response = {
       success: false,
       message: "Server failed to initialize."
-    });
+    };
+
+    if (process.env.NODE_ENV !== "production") {
+      response.error = error.message;
+    }
+
+    return res.status(500).json(response);
   }
 }
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello from Express on Vercel!' });
-});
 
 module.exports = handler;
